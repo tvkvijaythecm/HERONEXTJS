@@ -1,0 +1,40 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --font-display: var(--font-cormorant), 'Didot', 'Playfair Display', Georgia, serif;
+  --font-body:    var(--font-outfit), 'DM Sans', 'Helvetica Neue', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: #080808;
+  color: #fff;
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar        { width: 4px; }
+::-webkit-scrollbar-track  { background: #0d0d0d; }
+::-webkit-scrollbar-thumb  { background: rgba(255,160,60,0.35); border-radius: 2px; }
+
+/* Focus ring for accessibility */
+:focus-visible {
+  outline: 2px solid rgba(255,160,60,0.6);
+  outline-offset: 3px;
+}
+
+/* Utility: GPU layer hint */
+.gpu-layer {
+  will-change: transform;
+  transform: translateZ(0);
+}
