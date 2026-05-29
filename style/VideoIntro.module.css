@@ -1,0 +1,464 @@
+/* ─── VideoIntro.module.css ──────────────────────────────────────────── */
+
+/* ── Custom properties ────────────────────────────────────────────────── */
+.hero {
+  --clr-orange:   #ff7a2a;
+  --clr-amber:    #ffb040;
+  --clr-gold:     #ffd060;
+  --clr-cream:    rgba(255,240,210,0.92);
+  --clr-blue-mist:rgba(80,180,255,0.18);
+  --clr-dark:     #080808;
+  --font-display: 'Cormorant Garamond', 'Didot', 'Playfair Display', Georgia, serif;
+  --font-body:    'Outfit', 'DM Sans', 'Helvetica Neue', sans-serif;
+
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+  background: var(--clr-dark);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* ── Background blurred ambient video ─────────────────────────────────── */
+.bgVideoWrap {
+  position: absolute;
+  inset: -40px;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.bgVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(38px) saturate(1.5) brightness(0.28);
+  transform: scale(1.08);
+  transform-origin: center center;
+}
+
+/* ── Overlay layers ───────────────────────────────────────────────────── */
+.overlayVignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 50%,
+    transparent 30%,
+    rgba(0,0,0,0.55) 70%,
+    rgba(0,0,0,0.90) 100%
+  );
+  pointer-events: none;
+}
+
+.overlayGradLeft {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    105deg,
+    rgba(0,0,0,0.82) 0%,
+    rgba(0,0,0,0.50) 38%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.overlayGradBottom {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.88) 0%,
+    rgba(0,0,0,0.32) 30%,
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+/* Subtle film-grain noise */
+.overlayNoise {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  opacity: 0.028;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  animation: noiseShift 0.12s steps(1) infinite;
+}
+
+@keyframes noiseShift {
+  0%   { background-position: 0 0;       }
+  25%  { background-position: -40px 20px; }
+  50%  { background-position: 20px -30px; }
+  75%  { background-position: -20px 40px; }
+  100% { background-position: 30px -10px; }
+}
+
+/* ── Foreground hero video ────────────────────────────────────────────── */
+.fgVideoWrap {
+  position: absolute;
+  /* Right-of-center placement — subject frames left third for text */
+  right: -2%;
+  top: 0;
+  width: 62%;
+  height: 100%;
+  z-index: 3;
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 1.4s cubic-bezier(0.25,0.46,0.45,0.94),
+              transform 1.4s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+
+.fgLoaded {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.fgVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* Warm orange rim light — bleeds from subject edges */
+.rimLight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 35% 65% at 0% 55%,   rgba(255,120,30,0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 20% 40% at 50% 100%,  rgba(255,160,60,0.15) 0%, transparent 60%),
+    linear-gradient(to right, rgba(0,0,0,0.72) 0%, transparent 30%),
+    linear-gradient(to left,  rgba(0,0,0,0.45) 0%, transparent 25%);
+}
+
+/* ── Overlay text content ─────────────────────────────────────────────── */
+.content {
+  position: relative;
+  z-index: 6;
+  padding: clamp(40px, 7vw, 100px);
+  padding-top: clamp(60px, 10vh, 140px);
+  max-width: 56%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2vh, 24px);
+}
+
+/* Tagline */
+.tagline {
+  font-family: var(--font-body);
+  font-size: clamp(9px, 1.05vw, 13px);
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--clr-amber);
+  margin: 0;
+  /* Hairline rule before */
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tagline::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--clr-amber);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* Name block */
+.nameBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  line-height: 0.88;
+}
+
+.nameFirst,
+.nameLast {
+  font-family: var(--font-display);
+  font-size: clamp(64px, 10.5vw, 158px);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  color: var(--clr-cream);
+  margin: 0;
+  text-shadow:
+    0 0  60px rgba(255,140,40,0.20),
+    0 4px 30px rgba(0,0,0,0.70);
+  /* GPU-friendly */
+  will-change: transform, opacity;
+}
+
+.nameLast {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255,220,160,0.65);
+  /* Add subtle amber fill */
+  background: linear-gradient(
+    105deg,
+    rgba(255,200,100,0.75) 0%,
+    rgba(255,240,190,0.85) 45%,
+    rgba(255,180,70,0.60) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Thin horizontal rule between first/last name */
+.nameDivider {
+  width: clamp(48px, 7vw, 110px);
+  height: 1px;
+  margin: clamp(6px, 1.2vh, 16px) 0;
+  transform-origin: left center;
+  background: linear-gradient(to right, var(--clr-amber), transparent);
+  will-change: transform, opacity;
+}
+
+/* Role / subtitle */
+.role {
+  font-family: var(--font-body);
+  font-size: clamp(11px, 1.15vw, 15px);
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: rgba(255,230,190,0.55);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Glassmorphism controls ───────────────────────────────────────────── */
+.controls {
+  position: absolute;
+  bottom: clamp(24px, 5vh, 52px);
+  left: clamp(28px, 4vw, 64px);
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 50px;
+  padding: 8px 6px;
+  box-shadow:
+    0 4px 24px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  will-change: opacity, transform;
+}
+
+.ctrlBtn {
+  all: unset;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: rgba(255,220,170,0.85);
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+
+.ctrlBtn:hover {
+  background: rgba(255,180,80,0.14);
+  color: var(--clr-amber);
+  transform: scale(1.12);
+}
+
+.ctrlBtn:active {
+  transform: scale(0.94);
+}
+
+.ctrlDivider {
+  width: 1px;
+  height: 18px;
+  background: rgba(255,255,255,0.12);
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+
+/* ── "Tap for sound" badge ────────────────────────────────────────────── */
+.soundBadge {
+  position: absolute;
+  bottom: clamp(24px, 5vh, 52px);
+  left: clamp(140px, 17vw, 220px);
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 10px;
+  background: rgba(255,140,40,0.10);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,160,60,0.22);
+  border-radius: 50px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.soundBadgeHidden {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+.soundPulse {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--clr-amber);
+  flex-shrink: 0;
+  animation: pulseDot 1.8s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1;   transform: scale(1);    box-shadow: 0 0 0 0   rgba(255,176,64,0.5); }
+  50%       { opacity: 0.7; transform: scale(1.15); box-shadow: 0 0 0 5px rgba(255,176,64,0);   }
+}
+
+.soundText {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,220,160,0.70);
+  white-space: nowrap;
+}
+
+/* ── Scroll indicator ─────────────────────────────────────────────────── */
+.scrollIndicator {
+  all: unset;
+  cursor: pointer;
+  position: absolute;
+  bottom: clamp(20px, 4.5vh, 44px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  will-change: opacity, transform;
+}
+
+.scrollIndicator:hover .scrollLabel {
+  color: var(--clr-amber);
+}
+
+.scrollIndicator:hover .scrollTrack {
+  border-color: rgba(255,160,60,0.50);
+}
+
+.scrollLabel {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: rgba(255,210,150,0.42);
+  transition: color 0.3s ease;
+}
+
+.scrollTrack {
+  display: block;
+  width: 1px;
+  height: 52px;
+  border-left: 1px solid rgba(255,200,130,0.22);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.scrollPulse {
+  display: block;
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, var(--clr-amber), transparent);
+  animation: scrollPulseAnim 2.2s ease-in-out infinite;
+}
+
+@keyframes scrollPulseAnim {
+  0%   { top: -100%; opacity: 0;   }
+  20%  { opacity: 1; }
+  80%  { opacity: 0.8; }
+  100% { top: 200%;  opacity: 0;   }
+}
+
+/* ── Film-frame corner accents ────────────────────────────────────────── */
+.cornerTL, .cornerTR, .cornerBL, .cornerBR {
+  position: absolute;
+  z-index: 8;
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+  opacity: 0.30;
+}
+.cornerTL { top: 22px; left: 22px; border-top: 1px solid var(--clr-amber); border-left: 1px solid var(--clr-amber); }
+.cornerTR { top: 22px; right: 22px; border-top: 1px solid var(--clr-amber); border-right: 1px solid var(--clr-amber); }
+.cornerBL { bottom: 22px; left: 22px; border-bottom: 1px solid var(--clr-amber); border-left: 1px solid var(--clr-amber); }
+.cornerBR { bottom: 22px; right: 22px; border-bottom: 1px solid var(--clr-amber); border-right: 1px solid var(--clr-amber); }
+
+/* ── Responsive ───────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .fgVideoWrap {
+    width: 100%;
+    right: 0;
+    opacity: 0;
+  }
+  .fgLoaded {
+    opacity: 1;
+  }
+
+  .content {
+    max-width: 90%;
+    padding: clamp(28px, 6vw, 60px);
+    padding-top: clamp(80px, 14vh, 130px);
+  }
+
+  .nameFirst,
+  .nameLast {
+    font-size: clamp(52px, 14vw, 100px);
+  }
+
+  /* On mobile the text sits atop a semi-opaque scrim */
+  .overlayGradLeft {
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.88) 0%,
+      rgba(0,0,0,0.72) 50%,
+      rgba(0,0,0,0.88) 100%
+    );
+  }
+
+  .soundBadge {
+    bottom: clamp(80px, 12vh, 110px);
+    left: clamp(28px, 6vw, 60px);
+  }
+
+  .controls {
+    bottom: clamp(80px, 12vh, 110px);
+    left: auto;
+    right: clamp(20px, 5vw, 40px);
+  }
+}
+
+@media (max-width: 480px) {
+  .cornerTL, .cornerTR, .cornerBL, .cornerBR {
+    display: none;
+  }
+}
